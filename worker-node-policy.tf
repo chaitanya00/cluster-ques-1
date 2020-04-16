@@ -1,5 +1,5 @@
-resource "aws_iam_role" "demo-cluster" {
-  name = "terraform-eks-demo-cluster"
+resource "aws_iam_role" "demo-node" {
+  name = "terraform-eks-demo-node-wn"
 
   assume_role_policy = <<POLICY
 {
@@ -20,14 +20,18 @@ POLICY
 
 resource "aws_iam_role_policy_attachment" "demo-Amazon-EC2-Container-Registry-ReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.demo-node.name
+  role       = "${aws_iam_role.demo-node.name}"
 }
 
 resource "aws_iam_role_policy_attachment" "demo-Amazon-EKS-CNI-Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.demo-node.name
+  role       = "${aws_iam_role.demo-node.name}"
 }
-resource "aws_iam_role_policy_attachment" "demo-Amazon-EKS-Worker-Node-Policy " {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy "
-  role       = aws_iam_role.demo-node.name
+resource "aws_iam_role_policy_attachment" "demo-Amazon-EKS-Worker-Node-Policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  role       = "${aws_iam_role.demo-node.name}"
+}
+resource "aws_iam_instance_profile" "demo-node" {
+  name = "terraform-eks-demo"
+  role = "${aws_iam_role.demo-node.name}"
 }
